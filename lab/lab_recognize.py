@@ -3,7 +3,7 @@ import cv2
 import matplotlib.pyplot as plt
 
 # 读取图片
-pic_file = './../1.jpg'
+pic_file = './../3.jpg'
 img_bgr = cv2.imread(pic_file, cv2.IMREAD_COLOR)
 img_lab = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2LAB)
 cv2.namedWindow("input", cv2.WINDOW_GUI_NORMAL)
@@ -45,14 +45,15 @@ cv2.imshow("as_edge", as_edge)
 
 img_bs = img_lab[:, :, 2]
 
-bs_ret, bs_binary = cv2.threshold(img_bs, 240, 255, cv2.THRESH_BINARY)
+bs_ret, bs_binary = cv2.threshold(img_bs, 100, 255, cv2.THRESH_BINARY)
 bs_canny = cv2.Canny(bs_binary, 50, 150)
 bs_edge = img_bgr.copy()
 bs_lines = cv2.HoughLinesP(bs_canny, 1, np.pi / 180, 10, minLineLength=50, maxLineGap=50)
 if bs_lines is not None:
     for line in bs_lines:
         x1, y1, x2, y2 = line[0]
-        cv2.line(bs_edge, (x1, y1), (x2, y2), (0, 0, 255), 3)
+        if abs(y1 - y2) < 20:
+            cv2.line(bs_edge, (x1, y1), (x2, y2), (0, 0, 255), 3)
 
 cv2.imshow("bs_ret", bs_ret)
 cv2.imshow("bs_binary", bs_binary)
